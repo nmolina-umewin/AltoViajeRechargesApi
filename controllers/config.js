@@ -2,9 +2,9 @@
 
 const Config = require('../utilities/config');
 
-function config(req, res)
+function handle(req, res)
 {
     res.send(Config.Raw);
 }
 
-module.exports = config;
+module.exports = handle;

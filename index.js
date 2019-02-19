@@ -12,11 +12,12 @@ const app = Functions.App;
 
 // Routes
 // =========================
-app.get( '/config',       Controllers.Config);
-app.get( '/health',       Controllers.Health);
-app.get( '/services',     Controllers.Services.List);
-app.get( '/services/:id', Controllers.Services.ById);
-app.post('/recharge',     Controllers.Recharge);
+app.get( '/config',             Controllers.Config);
+app.get( '/health',             Controllers.Health);
+app.get( '/services',           Controllers.Services.List);
+app.get( '/services/:id',       Controllers.Services.ById);
+app.get( '/services/:id/token', Controllers.Services.TokenById);
+app.post('/recharge',           Controllers.Recharge);
 
 
 // Start Server!

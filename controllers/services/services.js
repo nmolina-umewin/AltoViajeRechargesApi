@@ -1,13 +1,39 @@
 "use strict";
 
-const Models = require('../../models');
+const P         = require('bluebird');
+const Models    = require('../../models');
 const Utilities = require('../../utilities');
+const Log       = Utilities.Log;
 
-function services(req, res, next) 
+function handle(req, res) 
 {
-	Utilities.Database.query(Models.Services.List, function (error, services, fields) {
-		res.send(services);
-	});
+    return P.bind(this)
+        .then(() => {
+            return getServices();
+        })
+        .then(services => {
+            res.send(services);
+        })
+        .catch(Utilities.Errors.CustomError, error => {
+            res.status(error.extra.code).send(error.toJson());
+        })
+        .catch(error => {
+            Log.Error(`Internal Server Error. ${error}`);
+            res.status(500).send(Utilities.Errors.Internal.toJson());
+        });
 }
 
-module.exports = services;
+function getServices() 
+{
+    return new P((resolve, reject) => {
+        Utilities.Database.query(Models.Services.List, (error, services) => {
+            if (error || !services) {
+                Log.Error(`Services not found. ${error}`);
+                return reject(Utilities.Errors.Internal);
+            }
+            return resolve(services);
+        });
+    });
+}
+
+module.exports = handle;

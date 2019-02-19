@@ -1,5 +1,6 @@
 "use strict";
 
 module.exports = {
-    Services : require('./services')
+    Services : require('./services'),
+    ServiceTokens : require('./serviceTokens')
 };

@@ -2,7 +2,7 @@
 
 const Utilities = require('../utilities');
 
-function health(req, res, next) 
+function handle(req, res, next) 
 {
     Utilities.Database.query('SHOW TABLES', function (error, results, fields) {
         var data = [];
@@ -14,4 +14,4 @@ function health(req, res, next)
     });
 }
 
-module.exports = health;
+module.exports = handle;

@@ -7,9 +7,9 @@ const REGEXP_INT_LEADING_ZEROES = /^[-+]?[0-9]+$/;
 
 function isInt(str, options)
 {
-    if (_.isNumber(str)) {
-        str = str.toString();
-    }
+    if (_.isNil(str)) return false;
+
+    if (_.isNumber(str)) str = str.toString();
 
     options = options || {};
 
