@@ -1,0 +1,36 @@
+{
+  "name": "altoviajerechargesapi",
+  "version": "1.0.0",
+  "description": "Alto Viaje Recharges API",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index",
+    "test": "mocha $OPT --file './tests/setup.js' --reporter spec --recursive tests/**/*.test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/xncompany/AltoViajeRechargesApi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/xncompany/AltoViajeRechargesApi/issues"
+  },
+  "homepage": "https://github.com/xncompany/AltoViajeRechargesApi#readme",
+  "dependencies": {
+    "async": "^2.6.2",
+    "altoviajesube": "git+https://github.com/xncompany/AltoViajeSubeNodeModule.git",
+    "bluebird": "^3.5.3",
+    "colors": "^1.3.3",
+    "express": "^4.16.4",
+    "lodash": "^4.17.11",
+    "moment": "^2.24.0",
+    "mysql": "^2.16.0",
+    "soap": "^0.26.0",
+    "uuid": "^3.3.2"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^6.0.0"
+  }
+}
