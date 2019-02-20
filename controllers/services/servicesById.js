@@ -19,8 +19,8 @@ function handle(req, res)
         .then(() => {
             return getService(context);
         })
-        .then(() => {
-            res.send(context.service);
+        .then(service => {
+            res.send(service);
         })
         .catch(Utilities.Errors.CustomError, error => {
             res.status(error.extra.code).send(error.toJson());
@@ -50,9 +50,7 @@ function getService(context)
                 Log.Error(`Service ${context.idService} not found. ${error}`);
                 return reject(Utilities.Errors.NotExists.Service);
             }
-
-            context.service = service;
-            return resolve(context);
+            return resolve(service);
         });
     });
 }
