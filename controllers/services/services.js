@@ -15,7 +15,7 @@ function handle(req, res)
             res.send(services);
         })
         .catch(Utilities.Errors.CustomError, error => {
-            res.status(error.extra.code).send(error.toJson());
+            res.status(error.extra && error.extra.code || 500).send(error.toJson());
         })
         .catch(error => {
             Log.Error(`Internal Server Error. ${error}`);

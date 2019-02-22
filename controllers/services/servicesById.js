@@ -23,7 +23,7 @@ function handle(req, res)
             res.send(service);
         })
         .catch(Utilities.Errors.CustomError, error => {
-            res.status(error.extra.code).send(error.toJson());
+            res.status(error.extra && error.extra.code || 500).send(error.toJson());
         })
         .catch(error => {
             Log.Error(`Internal Server Error. ${error}`);
@@ -36,7 +36,7 @@ function validate(context)
     return new P((resolve, reject) => {
         if (_.isEmpty(context.idService) || !Utilities.Validator.isInt(context.idService)) {
             Log.Error('Bad request "idService" not valid.');
-            return reject(new Utilities.Errors.CustomError('Bad request "idService" not valid.'));
+            return reject(new Utilities.Errors.CustomError('Bad request "idService" not valid.', {code: 400}));
         }
         return resolve(context);
     });

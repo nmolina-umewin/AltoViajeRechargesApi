@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index",
-    "test": "mocha $OPT --file './tests/setup.js' --reporter spec --recursive tests/**/*.test.js"
+    "test": "NODE_ENV=testing mocha $OPT --file './tests/setup.js' --reporter spec --recursive tests/**/*.test.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +31,7 @@
   },
   "devDependencies": {
     "chai": "^4.2.0",
-    "mocha": "^6.0.0"
+    "mocha": "^6.0.0",
+    "supertest": "^3.4.2"
   }
 }

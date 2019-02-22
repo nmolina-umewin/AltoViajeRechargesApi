@@ -30,7 +30,7 @@ function Title(msg)
 
 function Step(msg)
 {
-    console.log('\t•'.blue, msg);
+    console.log('\t•'.green, msg);
 }
 
 function Lap(msg)
