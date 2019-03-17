@@ -93,14 +93,17 @@ function getToken(context)
 function getIdTransactionExternal(context)
 {
     return new P((resolve, reject) => {
-        Utilities.Database.queryOne(Models.Recharges.Last, (error, lastRecharge) => {
-            if (error || !lastRecharge) {
+        Utilities.Database.queryOne(Models.Configurations.ByKey('recharges.sube.last.id'), (error, configuration) => {
+            if (error || !configuration) {
                 Log.Error(`Last Recharge not found. Use ID External Transaction from configuration. ${error}`);
                 return resolve(context);
             }
 
-            context.idTransactionExternal = lastRecharge.id_transaction_external;
-            return resolve(context);
+            context.idTransactionExternal = Number(configuration.description) + 1;
+
+            Utilities.Database.query(Models.Configurations.Update('recharges.sube.last.id', context.idTransactionExternal), () => {
+                return resolve(context);
+            });
         });
     });
 }

@@ -3,5 +3,6 @@
 module.exports = {
     Recharges : require('./recharges'),
     Services : require('./services'),
-    ServiceTokens : require('./serviceTokens')
+    ServiceTokens : require('./serviceTokens'),
+    Configurations : require('./configurations')
 };
