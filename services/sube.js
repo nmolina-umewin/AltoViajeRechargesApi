@@ -97,7 +97,7 @@ class SubeService extends Base
 
     addServiceToken(data) {
         return new P((resolve, reject) => {
-            Utilities.Database.query(Models.ServiceToken.Add(data), (error, result) => {
+            Utilities.Database.query(Models.ServiceTokens.Add(data), (error, result) => {
                 if (error) {
                     Log.Error(`Can't add service sube token. ${error}`);
                     return reject(Utilities.Errors.CannotExecuteQuery);
@@ -229,7 +229,7 @@ class SubeService extends Base
                     return reject(Utilities.Errors.CannotExecuteQuery);
                 }
 
-                Utilities.Database.queryOne(Models.Recharge.ById(result.insertId), (error, recharge) => {
+                Utilities.Database.queryOne(Models.Recharges.ById(result.insertId), (error, recharge) => {
                     if (error) {
                         Log.Error(`Can't exists recharge. ${error}`);
                         return reject(Utilities.Errors.Internal);
@@ -251,7 +251,7 @@ class SubeService extends Base
                     return reject(Utilities.Errors.CannotExecuteQuery);
                 }
 
-                Utilities.Database.queryOne(Models.Recharge.ById(id), (error, recharge) => {
+                Utilities.Database.queryOne(Models.Recharges.ById(id), (error, recharge) => {
                     if (error) {
                         Log.Error(`Can't exists recharge. ${error}`);
                         return reject(Utilities.Errors.Internal);
