@@ -93,7 +93,7 @@ function getToken(context)
 function getIdTransactionExternal(context)
 {
     return new P((resolve, reject) => {
-        Utilities.Database.queryOne(Models.Recharges.Last(), (error, lastRecharge) => {
+        Utilities.Database.queryOne(Models.Recharges.Last, (error, lastRecharge) => {
             if (error || !lastRecharge) {
                 Log.Error(`Last Recharge not found. Use ID External Transaction from configuration. ${error}`);
                 return resolve(context);

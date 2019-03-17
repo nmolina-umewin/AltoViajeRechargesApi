@@ -170,7 +170,7 @@ class SubeService extends Base
             data.description.status = 'ok';
             data.description.message = 'Recharge effected correctly';
             Log.Success(data.description.message);
-            return data;
+            return P.resolve(data);
         }
 
         switch (Number(recharge.detailedReturnCode)) {
@@ -185,7 +185,7 @@ class SubeService extends Base
                 data.description.status = 'fault_tokens';
                 data.description.message = 'Recharge SUBE again by fault Tokens';
                 // Retry
-                if (retry < MAX_RECHARGE_RETRY_FOR_INVALID_CODE) {
+                if (repeat < MAX_RECHARGE_RETRY_FOR_INVALID_CODE) {
                     return this.recharge(_.omit(data.description.request, 'token'), repeat + 1);
                 }
 
@@ -206,7 +206,7 @@ class SubeService extends Base
                 data.description.status = 'invalid_external_transaction';
                 data.description.message = 'Recharge SUBE again by failure Id Transaction External';
                 // Retry MAX_RECHARGE_RETRY times maximum
-                if (retry < MAX_RECHARGE_RETRY_FOR_INVALID_EXTERNAL_TRANSACTION) {
+                if (repeat < MAX_RECHARGE_RETRY_FOR_INVALID_EXTERNAL_TRANSACTION) {
                     return this.recharge(data.description.request, repeat + 1);
                 }
                 break;
@@ -218,7 +218,7 @@ class SubeService extends Base
                 break;
         }
         Log.Warning(data.description.message);
-        return data;
+        return P.resolve(data);
     }
 
     addRecharge(data) {
@@ -324,7 +324,7 @@ class SubeService extends Base
             data.descriptioon.status = 'internal_error';
             data.descriptioon.message = 'An internal error has occurred and your recharge was canceled, contact our attention center';
             Log.Success(data.description.message);
-            return data;
+            return P.resolve(data);
         }
 
         switch (Number(reverse.detailedReturnCode)) {
@@ -357,7 +357,7 @@ class SubeService extends Base
                 break;
         }
         Log.Warning(data.description.message);
-        return data;
+        return P.resolve(data);
     }
 }
 
