@@ -343,7 +343,7 @@ class SubeService extends Base
                 break;
 
             case REVERSE_DETAILED_RETURN_CODE_RECHARGE_OK:
-                data.idRechargeStatus = Models.Recharges.Statuses.DONE;
+                data.idRechargeStatus = Models.Recharges.Statuses.RECHARGE;
                 data.description.status = 'ok';
                 data.description.message = 'Your recharge was made correctly and applied to your card';
                 recharge.idRechargeStatus = Models.Recharges.Statuses.RECHARGE;
