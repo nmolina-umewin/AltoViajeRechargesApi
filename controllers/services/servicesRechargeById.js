@@ -113,6 +113,7 @@ function recharge(context)
     return new P((resolve, reject) => {
         let params = _.extend({}, context.payload, {
             token: context.serviceToken.token,
+            idTransactionExternal: context.idTransactionExternal,
             idCompany: context.idCompany,
             idUser: context.idUser
         });
