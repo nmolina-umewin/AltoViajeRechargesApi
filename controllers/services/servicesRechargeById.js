@@ -85,7 +85,8 @@ function getToken(context)
         Services[context.service.description].getToken(context.service.id).then(serviceToken => {
             context.serviceToken = serviceToken;
             return resolve(context);
-        });
+        })
+        .catch(reject);
     });
 }
 
