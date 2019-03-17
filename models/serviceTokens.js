@@ -8,6 +8,6 @@ module.exports = {
         return `SELECT * FROM service_tokens WHERE id_service = ${idService} AND TIMESTAMPDIFF(HOUR, NOW(), expired_at) > 0`;
     },
     Add         : function(data) {
-        return `INSERT INTO service_tokens VALUES (NULL, ${data.idService}, '${data.token}', '${data.description}', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 23 HOUR))`;
+        return `INSERT INTO service_tokens VALUES (NULL, ${data.idService}, '${data.token}', '${data.description}', DATE_ADD(CURRENT_TIMESTAMP, INTERVAL 23 HOUR), CURRENT_TIMESTAMP, NULL)`;
     }
 };
