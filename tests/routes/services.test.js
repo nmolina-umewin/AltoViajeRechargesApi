@@ -44,26 +44,8 @@ describe('Routes', () => {
                         .post('/services/1/recharge')
                         .set('Accept', 'application/json')
                         .send({
-                            payload: {
-                                cardNumber: '6061267340141116',
-                                amount: 50
-                            }
-                        })
-                        .expect('Content-Type', /json/)
-                        .expect(200)
-                        .end(done);
-                });
-            });
-
-            describe('GET /rechages', () => {
-                it('should return recharge for service with ID 1', function(done) {
-                    this.timeout(10000);
-
-                    request(app)
-                        .post('/recharges')
-                        .set('Accept', 'application/json')
-                        .send({
-                            idService: 1,
+                            idCompany: 1,
+                            idUser: 1,
                             payload: {
                                 cardNumber: '6061267340141116',
                                 amount: 50

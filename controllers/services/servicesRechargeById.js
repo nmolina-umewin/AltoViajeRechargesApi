@@ -6,53 +6,59 @@ const Models    = require('../../models');
 const Services  = require('../../services');
 const Utilities = require('../../utilities');
 const Config    = require('../../utilities/config');
+const validator = require('validator');
 const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
     let context = {
         idService: req.params && req.params.id || req.body && req.body.idService,
+        idCompany: req.body && req.body.idCompany || null,
+        idUser: req.body && req.body.idUser || null,
         payload: req.body && req.body.payload || {}
     };
 
-    return P.bind(this)
-        .then(() => {
-            return validate(context);
-        })
-        .then(() => {
-            return getService(context);
-        })
-        .then(() => {
-            return getToken(context);
-        })
-        .then(() => {
-            return getIdTransactionExternal(context);
-        })
-        .then(() => {
-            return recharge(context);
-        })
-        .then(recharge => {
-            res.send(recharge);
-        })
-        .catch(Utilities.Errors.CustomError, error => {
-            res.status(error.extra && error.extra.code || 500).send(error.toJson());
-        })
-        .catch(error => {
-            Log.Error(`Internal Server Error. ${error}`);
-            res.status(500).send(Utilities.Errors.Internal.toJson());
-        });
+    return Utilities.Functions.CatchError(res,
+        P.bind(this)
+            .then(() => {
+                return validate(context);
+            })
+            .then(() => {
+                return getService(context);
+            })
+            .then(() => {
+                return getToken(context);
+            })
+            .then(() => {
+                return getIdTransactionExternal(context);
+            })
+            .then(() => {
+                return recharge(context);
+            })
+            .then(recharge => {
+                res.send(recharge);
+            })
+    );
 }
 
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (!Utilities.Validator.isInt(context.idService)) {
-            Log.Error('Bad request "idService" not valid.');
-            return reject(new Utilities.Errors.CustomError('Bad request "idService" not valid.', {code: 400}));
+        if (!validator.isInt(context.idService)) {
+            Log.Error('Bad request invalid "idService".');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid "idService".'));
+        }
+        else if (!context.idCompany) {
+            Log.Error('Bad request invalid "idCompany".');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid "idCompany".'));
+        }
+        else if (!context.idUser) {
+            Log.Error('Bad request invalid "idUser".');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid "idUser".'));
         }
         else if (_.isEmpty(context.payload) || _.isEmpty(context.payload.cardNumber) || !context.payload.amount) {
-            Log.Error('Bad request "payload" not valid.');
-            return reject(new Utilities.Errors.CustomError('Bad request "payload" not valid.', {code: 400}));
+            Log.Error('Bad request invalid "payload".');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid "payload".'));
         }
         return resolve(context);
     });
@@ -102,7 +108,9 @@ function recharge(context)
 {
     return new P((resolve, reject) => {
         let params = _.extend({}, context.payload, {
-            token: context.serviceToken.token
+            token: context.serviceToken.token,
+            idCompany: context.idCompany,
+            idUser: context.idUser
         });
 
         Services[context.service.description]

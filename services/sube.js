@@ -127,6 +127,8 @@ class SubeService extends Base
                 }
 
                 let data = {
+                    idCompany: params.idCompany,
+                    idUser: params.idUser,
                     idRechargeType: Models.Recharges.Types.RECHARGE,
                     idTransaction: NOT_RESPONSE_ID_TRANSACTION,
                     idTransactionExternal: params.idTransactionExternal,
@@ -165,6 +167,7 @@ class SubeService extends Base
     processRecharge(data, recharge, repeat) {
         if (recharge.returnCode === RETURN_CODE_OK) {
             data.idRechargeStatus = Models.Recharges.Statuses.DONE;
+            data.description.status = 'ok';
             data.description.message = 'Recharge effected correctly';
             Log.Success(data.description.message);
             return data;
@@ -173,11 +176,13 @@ class SubeService extends Base
         switch (Number(recharge.detailedReturnCode)) {
             case RECHARGE_DETAILED_RETURN_CODE_INVALID_CARD:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'invalid_card';
                 data.description.message = 'Invalid Card';
                 break;
 
             case RECHARGE_DETAILED_RETURN_CODE_INVALID_CODE:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'fault_tokens';
                 data.description.message = 'Recharge SUBE again by fault Tokens';
                 // Retry
                 if (retry < MAX_RECHARGE_RETRY_FOR_INVALID_CODE) {
@@ -186,16 +191,19 @@ class SubeService extends Base
 
             case RECHARGE_DETAILED_RETURN_CODE_BLACK_LIST:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'card_in_black_list';
                 data.description.message = 'Your card was blocked please contact SUBE';
                 break;
 
             case RECHARGE_DETAILED_RETURN_CODE_INVALID_AMOUNT:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'invalid_amount';
                 data.description.message = 'Invalid amount';
                 break;
 
             case RECHARGE_DETAILED_RETURN_CODE_INVALID_EXTERNAL_TRANSACTION:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'invalid_external_transaction';
                 data.description.message = 'Recharge SUBE again by failure Id Transaction External';
                 // Retry MAX_RECHARGE_RETRY times maximum
                 if (retry < MAX_RECHARGE_RETRY_FOR_INVALID_EXTERNAL_TRANSACTION) {
@@ -205,6 +213,7 @@ class SubeService extends Base
 
             default:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'internal_error';
                 data.description.message = 'An internal error has occurred, try later';
                 break;
         }
@@ -267,6 +276,8 @@ class SubeService extends Base
                 }
 
                 let data = {
+                    idCompany: params.idCompany,
+                    idUser: params.idUser,
                     idRechargeType: Models.Recharges.Types.REVERSE,
                     idTransaction: params.idTransaction,
                     idTransactionExternal: params.idTransactionExternal,
@@ -281,6 +292,7 @@ class SubeService extends Base
 
                 if (!reverse) {
                     data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                    data.description.status = 'reverse_recharge';
                     data.description.message = 'Reverse recharge';
                     Log.Step(`${data.description.message} sube because not response.result`);
 
@@ -309,7 +321,8 @@ class SubeService extends Base
     processReverse(data, reverse, recharge) {
         if (reverse.returnCode === RETURN_CODE_OK) {
             data.idRechargeStatus = Models.Recharges.Statuses.CANCELED;
-            data.description.message = 'An internal error has occurred and your recharge was canceled, contact our attention center';
+            data.descriptioon.status = 'internal_error';
+            data.descriptioon.message = 'An internal error has occurred and your recharge was canceled, contact our attention center';
             Log.Success(data.description.message);
             return data;
         }
@@ -317,25 +330,29 @@ class SubeService extends Base
         switch (Number(reverse.detailedReturnCode)) {
             case REVERSE_DETAILED_RETURN_CODE_INVALID_CODE:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'invalid_code';
                 data.description.message = 'Invalid Code';
-                recharge.description.rendir = true;
+                recharge.description.pay = true;
                 break;
 
             case REVERSE_DETAILED_RETURN_CODE_SERVICE_NOT_SUPPORTED:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'service_not_supported';
                 data.description.message = 'Service not supported';
-                recharge.description.rendir = true;
+                recharge.description.pay = true;
                 break;
 
             case REVERSE_DETAILED_RETURN_CODE_RECHARGE_OK:
                 data.idRechargeStatus = Models.Recharges.Statuses.DONE;
+                data.description.status = 'ok';
                 data.description.message = 'Your recharge was made correctly and applied to your card';
                 recharge.idRechargeStatus = Models.Recharges.Statuses.RECHARGE;
-                recharge.description.rendir = true;
+                recharge.description.pay = true;
                 break;
 
             default:
                 data.idRechargeStatus = Models.Recharges.Statuses.FAIL;
+                data.description.status = 'internal_error';
                 data.description.message = 'An internal error has occurred, try later';
                 break;
         }

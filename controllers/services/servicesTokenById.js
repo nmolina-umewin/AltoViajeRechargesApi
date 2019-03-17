@@ -5,6 +5,7 @@ const P         = require('bluebird');
 const Models    = require('../../models');
 const Services  = require('../../services');
 const Utilities = require('../../utilities');
+const validator = require('validator');
 const Log       = Utilities.Log;
 
 function handle(req, res) 
@@ -13,34 +14,29 @@ function handle(req, res)
         idService: req.params && req.params.id || null
     };
 
-    return P.bind(this)
-        .then(() => {
-            return validate(context);
-        })
-        .then(() => {
-            return getService(context);
-        })
-        .then(() => {
-            return Services[context.service.description].getToken(context.service.id);
-        })
-        .then(serviceToken => {
-            res.send(serviceToken);
-        })
-        .catch(Utilities.Errors.CustomError, error => {
-            res.status(error.extra && error.extra.code || 500).send(error.toJson());
-        })
-        .catch(error => {
-            Log.Error(`Internal Server Error. ${error}`);
-            res.status(500).send(Utilities.Errors.Internal.toJson());
-        });
+    return Utilities.Functions.CatchError(res,
+        P.bind(this)
+            .then(() => {
+                return validate(context);
+            })
+            .then(() => {
+                return getService(context);
+            })
+            .then(() => {
+                return Services[context.service.description].getToken(context.service.id);
+            })
+            .then(serviceToken => {
+                res.send(serviceToken);
+            })
+    );
 }
 
 function validate(context)
 {
     return new P((resolve, reject) => {
-        if (_.isEmpty(context.idService) || !Utilities.Validator.isInt(context.idService)) {
-            Log.Error('Bad request "idService" not valid.');
-            return reject(new Utilities.Errors.CustomError('Bad request "idService" not valid.', {code: 400}));
+        if (_.isEmpty(context.idService) || !validator.isInt(context.idService)) {
+            Log.Error('Bad request invalid "idService".');
+            return reject(new Utilities.Errors.BadRequest('Bad request invalid "idService".'));
         }
         return resolve(context);
     });

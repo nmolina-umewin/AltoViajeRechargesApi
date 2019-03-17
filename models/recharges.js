@@ -18,16 +18,19 @@ const STATUSES = {
 };
 
 module.exports = {
-    Types    : TYPES,
-    Statuses : STATUSES,
-    Last     : 'SELECT * FROM recharges ORDER BY created_at DESC LIMIT 1',
-    ById     : function(id) {
+    Types       : TYPES,
+    Statuses    : STATUSES,
+    Last        : 'SELECT * FROM recharges ORDER BY created_at DESC LIMIT 1',
+    ById        : function(id) {
         return `SELECT * FROM recharges WHERE id = ${id}`;
     },
-    Add      : function(data) {
-        return `INSERT INTO recharges VALUES (NULL, ${data.idRechargeType}, ${data.idRechargeStatus}, ${data.idTransaction}, ${data.idTransactionExternal}, ${data.amount}, '${data.token}', '${JSON.stringify(data.description)}', NOW())`;
+    ByIdCompany : function(id, limit = 0) {
+        return `SELECT * FROM recharges WHERE id_company = ${id} ORDER BY created_at DESC` + (limit !== 0 ? ` LIMIT ${limit}` : '');
     },
-    Update   : function(id, data) {
+    Add         : function(data) {
+        return `INSERT INTO recharges VALUES (NULL, ${data.idCompany}, ${data.idUser}, ${data.idRechargeType}, ${data.idRechargeStatus}, ${data.idTransaction}, ${data.idTransactionExternal}, ${data.amount}, '${data.token}', '${JSON.stringify(data.description)}', NOW())`;
+    },
+    Update      : function(id, data) {
         let query = ['UPDATE recharges SET'];
         let attributes = [];
 

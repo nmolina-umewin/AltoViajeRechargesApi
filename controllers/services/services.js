@@ -7,20 +7,15 @@ const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
-    return P.bind(this)
-        .then(() => {
-            return getServices();
-        })
-        .then(services => {
-            res.send(services);
-        })
-        .catch(Utilities.Errors.CustomError, error => {
-            res.status(error.extra && error.extra.code || 500).send(error.toJson());
-        })
-        .catch(error => {
-            Log.Error(`Internal Server Error. ${error}`);
-            res.status(500).send(Utilities.Errors.Internal.toJson());
-        });
+    return Utilities.Functions.CatchError(res,
+        P.bind(this)
+            .then(() => {
+                return getServices();
+            })
+            .then(services => {
+                res.send(services);
+            })
+    );
 }
 
 function getServices() 
