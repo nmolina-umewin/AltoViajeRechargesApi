@@ -17,6 +17,7 @@ module.exports = {
         error_file: `/root/altoviaje/logs/${APP_NAME}.error.log`,
         env: {
             NODE_ENV: 'development',
+            LOG_ERROR_STACK: 1,
             watch: 'true',
             ignore_watch: ['node_modules', 'tests']
         },
