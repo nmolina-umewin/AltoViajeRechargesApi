@@ -18,6 +18,10 @@ function handle(req, res)
         payload: req.body && req.body.payload || {}
     };
 
+    if (process.env.MOCK_RESPONSES && mockResponses(res, context)) {
+        return;
+    }
+
     return Utilities.Functions.CatchError(res,
         P.bind(this)
             .then(() => {
@@ -123,6 +127,27 @@ function recharge(context)
             .then(resolve)
             .catch(reject);
     });
+}
+
+function mockResponses(res, context)
+{
+    if (context.payload.cardNumber === '6061267195495203') {
+        res.send({"id":9,"id_company":1,"id_user":4,"id_recharge_type":1,"id_recharge_status":3,"id_transaction":370145,"id_transaction_external":37011,"amount":context.payload.amount,"token":"F0652528D132CBF1","description":{"service":"sube","request":{"cardNumber":"6061267195495203","amount":context.payload.amount,"token":"F0652528D132CBF1","idTransactionExternal":37011,"idCompany":1,"idUser":4,"idChannel":"77"},"response":{"detailedReturnCode":0,"percent":"4","returnCode":0,"SUBEtransactionID":"370145"},"status":"ok","message":"Recharge effected correctly"},"created_at":"2019-03-17T23:33:10.000Z"});
+        return true;
+    }
+    else if (context.payload.cardNumber === '6061267187152044') {
+        res.send({"id":11,"id_company":1,"id_user":4,"id_recharge_type":1,"id_recharge_status":6,"id_transaction":0,"id_transaction_external":37013,"amount":context.payload.amount,"token":"F0652528D132CBF1","description":{"service":"sube","request":{"cardNumber":"6061267187152044","amount":context.payload.amount,"token":"F0652528D132CBF1","idTransactionExternal":37013,"idCompany":1,"idUser":4,"idChannel":"77"},"response":{"detailedReturnCode":4,"returnCode":1,"SUBEtransactionID":"0"},"status":"card_in_black_list","message":"Your card was blocked please contact SUBE"},"created_at":"2019-03-17T23:34:40.000Z"});
+        return true;
+    }
+    else if (context.payload.cardNumber === '7584003387152044') {
+        res.send({"id":10,"id_company":1,"id_user":4,"id_recharge_type":1,"id_recharge_status":6,"id_transaction":0,"id_transaction_external":37012,"amount":context.payload.amount,"token":"F0652528D132CBF1","description":{"service":"sube","request":{"cardNumber":"7584003387152044","amount":context.payload.amount,"token":"F0652528D132CBF1","idTransactionExternal":37012,"idCompany":1,"idUser":4,"idChannel":"77"},"response":{"detailedReturnCode":1,"returnCode":1,"SUBEtransactionID":"0"},"status":"invalid_card","message":"Invalid Card"},"created_at":"2019-03-17T23:34:08.000Z"});
+        return true;
+    }
+    else if (context.payload.cardNumber === '6061267340141116') {
+        res.send({"id":8,"id_company":1,"id_user":4,"id_recharge_type":1,"id_recharge_status":3,"id_transaction":370144,"id_transaction_external":37010,"amount":context.payload.amount,"token":"F0652528D132CBF1","description":{"service":"sube","request":{"cardNumber":"6061267340141116","amount":context.payload.amount,"token":"F0652528D132CBF1","idTransactionExternal":37010,"idCompany":1,"idUser":4,"idChannel":"77"},"response":{"detailedReturnCode":0,"percent":"3","returnCode":0,"SUBEtransactionID":"370144"},"status":"ok","message":"Recharge effected correctly"},"created_at":"2019-03-17T23:32:28.000Z"});
+        return true;
+    }
+    return false;
 }
 
 module.exports = handle;
