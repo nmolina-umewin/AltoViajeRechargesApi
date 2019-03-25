@@ -1,8 +1,8 @@
 "use strict";
 
 module.exports = {
-    List         : require('./services'),
-    ById         : require('./servicesById'),
-    TokenById    : require('./servicesTokenById'),
-    RechargeById : require('./servicesRechargeById')
+    List         : require('./all'),
+    ById         : require('./getById'),
+    TokenById    : require('./getTokenById'),
+    RechargeById : require('./rechargeById')
 };
