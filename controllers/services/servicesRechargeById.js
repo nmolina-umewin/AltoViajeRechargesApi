@@ -11,12 +11,16 @@ const Log       = Utilities.Log;
 
 function handle(req, res) 
 {
+    let body = req.body || {};
     let context = {
-        idService: req.params && req.params.id || req.body && req.body.idService,
-        idCompany: req.body && req.body.idCompany || null,
-        idUser: req.body && req.body.idUser || null,
-        payload: req.body && req.body.payload || {}
+        idService: req.params && req.params.id || null,
+        idCompany: body.idCompany || body.id_company || null,
+        idUser: body.idUser || body.id_user || null,
+        payload: body.payload || {},
+        token: body.token || null
     };
+
+    context.payload.cardNumber = context.payload.cardNumber || context.payload.cardnumber || context.payload.card_number;
 
     if (process.env.MOCK_RESPONSES && mockResponses(res, context)) {
         return;
@@ -28,13 +32,7 @@ function handle(req, res)
                 return validate(context);
             })
             .then(() => {
-                return getService(context);
-            })
-            .then(() => {
-                return getToken(context);
-            })
-            .then(() => {
-                return getIdTransactionExternal(context);
+                return populate(context);
             })
             .then(() => {
                 return recharge(context);
@@ -66,6 +64,19 @@ function validate(context)
         }
         return resolve(context);
     });
+}
+
+function populate(context) {
+    return P.resolve()
+        .then(() => {
+            return getService(context);
+        })
+        .then(() => {
+            return getToken(context);
+        })
+        .then(() => {
+            return getIdTransactionExternal(context);
+        });
 }
 
 function getService(context)
@@ -116,7 +127,7 @@ function recharge(context)
 {
     return new P((resolve, reject) => {
         let params = _.extend({}, context.payload, {
-            token: context.serviceToken.token,
+            token: context.token || context.serviceToken.token,
             idTransactionExternal: context.idTransactionExternal,
             idCompany: context.idCompany,
             idUser: context.idUser

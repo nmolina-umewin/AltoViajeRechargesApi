@@ -9,69 +9,62 @@ API para realizar recargas.
  GET  /health
  GET  /services
  GET  /services/{id_service}
- POST /recharge
+ GET  /services/{id_service}/token
+ POST /services/{id_service}/recharge
 ```
 
-### GET /token
+### GET /services
 
-Genera un nuevo Token. Ese token debería compartirse a lo largo de todos los microservicios ya que una transacción nace en el producto de PyME y continúa a lo largo de Payments y Recharges.
+Obtiene la lista de los servicios habilitados para operar con esta API (`id_service`).
 
-```sh
-{
-   "token" : "1f90230e-990c-40fe-8e4a-1f2121090b74"
-}
-```
-
-### POST /transactions
-
-Guarda una nueva transacción. El body del request requiere los siguientes elementos:
-
-```sh
-{
-  "id_application" : 1,
-  "id_transaction_type" : 30001,
-  "token" : "676318f1-35d1-4fd6-a949-517eac663c5c",
-  "description" : {
-    "cardnumber" : "3061268011902638",
-    "amount" : "200",
-    "id_user" : "15",
-    "username" : "Gonzalo Aizpun"
-  }
-}
-```
-
-### GET /applications
-
-Obtiene la lista de las aplicaciones habilitadas para operar con esta API (id_application).
-
-```sh
+```javascript
 [
     {
         "id" : 1,
-        "description" : "altoviaje.payments.api"
+        "active": 1,
+        "description" : "sube"
     },
-    {
-        "id" : 2,
-        "description" : "altoviaje.recharges.api"
-    }
     { ... }
 ]
 ```
 
-### GET /types
+### GET /services/{id_service}
 
-Obtiene la lista de códigos de eventos transaccionales disponibles (id_transaction_type).
+Obtiene el servicio habilitado para operar con esta API (`id_service`).
 
-```sh
-[
-    {
-        "id" : 10001,
-        "description" : "user.new"
-    },
-    {
-        "id" : 10002,
-        "description" : "user.update"
-    },
-    { ... }
-]
+```javascript
+{
+    "id" : 1,
+    "active": 1,
+    "description" : "sube"
+}
+```
+
+### GET /services/{id_service}/token
+
+Genera un nuevo Token para operar el servicio seleccionado (`{id_service}`). El token tendra una vida util de 24 hs.
+
+```javascript
+// Ejemplo
+{
+   "token" : "8e4a1f2121090b74"
+}
+```
+
+### POST /services/{id_service}/recharge
+
+Genera una nueva transacción contra el servicio selecionado (`{id_service}`). El body del request requiere los siguientes elementos:
+
+```javascript
+{
+  "id_service" : 1,
+  "id_company" : 1,
+  "id_user" : 1,
+  "payload" : {
+    "card_number" : "3061268011902638",
+    "amount" : 200
+  },
+  // Opcional. En caso de no enviar el token. El micro-servicio se encargar de reutilizar un token activo o generar uno nuevo en caso de ser necesario.
+  "token" : "8e4a1f2121090b74"
+}
 ```

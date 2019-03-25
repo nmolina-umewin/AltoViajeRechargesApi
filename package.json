@@ -4,8 +4,8 @@
   "description": "Alto Viaje Recharges API",
   "main": "index.js",
   "scripts": {
-    "start": "node index",
-    "dev": "LOG_ERROR_STACK=1 node index",
+    "start": "NODE_ENV=production node index",
+    "dev": "NODE_ENV=development LOG_ERROR_STACK=1 node index",
     "test": "NODE_ENV=testing mocha $OPT --file './tests/setup.js' --reporter spec --recursive tests/**/*.test.js"
   },
   "repository": {
